@@ -28,9 +28,9 @@ func tServer() *httptest.Server {
 	mux.HandleFunc("/file/four.txt", bodyh("four"))
 	mux.HandleFunc("/file/five.txt", bodyh("five"))
 
-	mux.HandleFunc("/file/large.txt", bodyh(`{"data": ["one"], "meta": {"code":200}}`))
-	mux.HandleFunc("/file/medium.txt", bodyh("Hello World!"))
-	mux.HandleFunc("/file/small.txt", bodyh("abc"))
+	mux.HandleFunc("/file/39.txt", bodyh(`{"data": ["one"], "meta": {"code":200}}`))
+	mux.HandleFunc("/file/12.txt", bodyh("Hello World!"))
+	mux.HandleFunc("/file/3.txt", bodyh("abc"))
 
 	ts := httptest.NewServer(mux)
 	return ts

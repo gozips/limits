@@ -16,9 +16,9 @@ func TestSizeReturnsUpToLimit(t *testing.T) {
 		u, b string
 		e    bool
 	}{
-		{u("large.txt"), `{"data"`, true},
-		{u("medium.txt"), `Hello W`, true},
-		{u("small.txt"), `abc`, false},
+		{u("39.txt"), `{"data"`, true},
+		{u("12.txt"), `Hello W`, true},
+		{u("3.txt"), `abc`, false},
 	} {
 		_, r, _ := fn(v.u)
 		buf, err := readb(r)
