@@ -1,45 +1,10 @@
 package limits
 
 import (
-	"bytes"
-	"fmt"
 	"github.com/gozips/sources"
 	"github.com/nowk/assert"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 )
-
-func bodyh(str string) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte(str))
-	}
-}
-
-func tServer() *httptest.Server {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/file/one.txt", bodyh("one"))
-	mux.HandleFunc("/file/two.txt", bodyh("two"))
-	mux.HandleFunc("/file/three.txt", bodyh("three"))
-	mux.HandleFunc("/file/four.txt", bodyh("four"))
-	mux.HandleFunc("/file/five.txt", bodyh("five"))
-
-	ts := httptest.NewServer(mux)
-	return ts
-}
-
-func bodyrc(str string) io.ReadCloser {
-	b := bytes.NewReader([]byte(str))
-	return ioutil.NopCloser(b)
-}
-
-func urlfn(urlstr string) func(string) string {
-	return func(f string) string {
-		return fmt.Sprintf("%s/file/%s", urlstr, f)
-	}
-}
 
 func TestCountCountsErroredReadAttempts(t *testing.T) {
 	var ts = tServer()
