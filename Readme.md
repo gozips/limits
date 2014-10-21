@@ -16,6 +16,15 @@ Limit number of
     zips.Add("file4.txt") // => This will return as an exceeded limit error
     zips.Add("file5.txt") // => This will return as an exceeded limit error
 
+---
+
+Limit read size
+
+    zips := gozips.New(limits.Size(256, sources.FS))
+    zips.Add("1024.txt") // => will read up to 256 bytes
+    zips.Add("1024.txt") // => will read up to 256 bytes
+    zips.Add("128.txt")  // => will read to EOF
+
 ## License
 
 MIT
