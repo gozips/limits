@@ -56,7 +56,7 @@ func TestCountCountsErroredReadAttempts(t *testing.T) {
 		u("five.txt"),
 	} {
 		_, _, err := fn(v)
-		if err != nil && err.Error() == "exceeded maximum number of files" {
+		if err != nil && err.Error() == "error: count: exceeded limit" {
 			i++
 		}
 	}
@@ -78,7 +78,7 @@ func TestCountLaxDoesNotCountErroredReadAttempts(t *testing.T) {
 		u("five.txt"),
 	} {
 		_, _, err := fn(v)
-		if err != nil && err.Error() == "exceeded maximum number of files" {
+		if err != nil && err.Error() == "error: count: exceeded limit" {
 			i++
 		}
 	}

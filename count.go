@@ -16,7 +16,7 @@ func count(n int, strict bool, s source.Func) source.Func {
 
 	return func(p string) (string, io.ReadCloser, error) {
 		if i >= n {
-			return fp.Base(p), nil, errors.New("exceeded maximum number of files")
+			return fp.Base(p), nil, errors.New("error: count: exceeded limit")
 		}
 
 		name, r, err := s.Readfrom(p)
