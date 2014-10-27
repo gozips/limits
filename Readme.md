@@ -27,6 +27,16 @@ Limit read size
 
 ---
 
+Limit total size
+
+    zips := gozips.New(limits.TotalSize(1280, sources.FS))
+    zips.Add("1024.txt") // => will read up to 1024 bytes
+    zips.Add("1024.txt") // => will read up to 256 bytes, and return an exceeded total size error
+    zips.Add("128.txt")  // => This will return an exceeded total size error
+    zips.Add("128.txt")  // => This will return an exceeded total size error
+
+---
+
 Combine them
 
     zips := gozips.New(limits.Count(3, limits.Size(256, sources.FS)))
