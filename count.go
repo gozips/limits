@@ -30,7 +30,7 @@ func count(n int, strict bool, s source.Func) source.Func {
 		if err != nil {
 			return name, r, err
 		}
-		return name, r, err
+		return name, r, nil
 	}
 }
 
