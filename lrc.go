@@ -17,7 +17,7 @@ func (s stat) Exceeded() bool {
 	return s.n <= 0
 }
 
-// lrc is a LimitedReader = ReadCloser
+// lrc is a LimitedReader + ReadCloser
 type lrc struct {
 	*io.LimitedReader
 	io.ReadCloser
@@ -45,8 +45,7 @@ func (r lrc) Read(b []byte) (int, error) {
 	return n, err
 }
 
-// slrc is a LimitedReader + ReadCloser that keeps track of what it's read as a
-// total combined
+// slrc wraps lrc and keeps track of what it has read as a total combined
 type slrc struct {
 	*lrc
 	*stat

@@ -6,11 +6,11 @@ import (
 )
 
 // TotalSize reads up to a total of n of the combined sizes
-// It's order combination counts. It should wrap the Size limiter
+// It's order combination counts. It should wrap the Size limiter, ex:
 //
 //		TotalSize(N, Size(M, source.Func))
 //
-// Running it in reverse will lose a byte if the Size limiter exceeds
+// Running it in reverse will lose a byte each time the Size limiter exceeds
 func TotalSize(n int64, s source.Func) source.Func {
 	st := stat{
 		n: n,
