@@ -32,3 +32,69 @@ func TestCombinedLimits(t *testing.T) {
 	}
 	assert.Equal(t, 2, i)
 }
+
+func TestCombinedLimitsOnSize(t *testing.T) {
+	var ts = tServer()
+	defer ts.Close()
+	u := urlfn(ts.URL)
+
+	fn := Count(3, TotalSize(12, Size(7, sources.HTTP)))
+	for _, v := range []struct {
+		u, b string
+	}{
+		{u("one.txt"), "one"},
+		{u("12.txt"), "Hello W"},
+		{u("two.txt"), "tw"},
+		{u("three.txt"), ""},
+		{u("four.txt"), ""},
+	} {
+		_, b, err := fn(v.u)
+		if v.b != "" {
+			buf, err := readb(b)
+			assert.Equal(t, buf.String(), v.b)
+
+			if v.b == "Hello W" {
+				assert.Equal(t, "error: size: exceeded limit", err.Error())
+			}
+
+			if v.b == "tw" {
+				assert.Equal(t, "error: total size: exceeded limit", err.Error())
+			}
+		} else {
+			assert.Equal(t, "error: count: exceeded limit", err.Error())
+		}
+	}
+}
+
+func TestCombinedLimitsOnSizeReversedOrder(t *testing.T) {
+	var ts = tServer()
+	defer ts.Close()
+	u := urlfn(ts.URL)
+
+	fn := Count(3, Size(7, TotalSize(12, sources.HTTP)))
+	for _, v := range []struct {
+		u, b string
+	}{
+		{u("one.txt"), "one"},
+		{u("12.txt"), "Hello W"},
+		{u("two.txt"), "t"}, // NOTE we lose a byte if the previous exceeded size
+		{u("three.txt"), ""},
+		{u("four.txt"), ""},
+	} {
+		_, b, err := fn(v.u)
+		if v.b != "" {
+			buf, err := readb(b)
+			assert.Equal(t, buf.String(), v.b)
+
+			if v.b == "Hello W" {
+				assert.Equal(t, "error: size: exceeded limit", err.Error())
+			}
+
+			if v.b == "t" {
+				assert.Equal(t, "error: total size: exceeded limit", err.Error())
+			}
+		} else {
+			assert.Equal(t, "error: count: exceeded limit", err.Error())
+		}
+	}
+}
