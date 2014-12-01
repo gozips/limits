@@ -13,7 +13,10 @@ func Size(n int64, s source.Func) source.Func {
 			return name, r, err
 		}
 
-		l := newLrc(name, n, r)
-		return name, l, nil
+		var setName = func(l *Limited) {
+			l.Name = name
+		}
+
+		return name, NewLimited(n, r, setName), nil
 	}
 }

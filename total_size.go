@@ -22,7 +22,6 @@ func TotalSize(n int64, s source.Func) source.Func {
 			return name, r, err
 		}
 
-		c := newSlrc(name, &st, r)
-		return name, c, nil
+		return name, NewCombined(&st, r), nil
 	}
 }
