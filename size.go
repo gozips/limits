@@ -13,7 +13,7 @@ func Size(n int64, s source.Func) source.Func {
 			return name, r, err
 		}
 
-		l := newLrc(n, r)
+		l := newLrc(name, n, r)
 		return name, l, nil
 	}
 }

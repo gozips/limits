@@ -1,6 +1,7 @@
 package limits
 
 import (
+	"fmt"
 	"github.com/gozips/source"
 	"io"
 )
@@ -19,12 +20,14 @@ func (s stat) Exceeded() bool {
 
 // lrc is a LimitedReader + ReadCloser
 type lrc struct {
+	name string
 	*io.LimitedReader
 	io.ReadCloser
 }
 
-func newLrc(n int64, r io.ReadCloser) *lrc {
+func newLrc(name string, n int64, r io.ReadCloser) *lrc {
 	return &lrc{
+		name: name,
 		LimitedReader: &io.LimitedReader{
 			R: r,
 			N: n,
@@ -38,7 +41,7 @@ func (r lrc) Read(b []byte) (int, error) {
 	if err == io.EOF {
 		m, _ := r.LimitedReader.R.Read(make([]byte, 1))
 		if m > 0 {
-			return n, source.ReadError{"error: size: exceeded limit"}
+			return n, source.ReadError{fmt.Sprintf("error: size: %s exceeded limit", r.name)}
 		}
 	}
 
@@ -51,9 +54,9 @@ type slrc struct {
 	*stat
 }
 
-func newSlrc(s *stat, r io.ReadCloser) *slrc {
+func newSlrc(name string, s *stat, r io.ReadCloser) *slrc {
 	return &slrc{
-		lrc:  newLrc(s.n, r),
+		lrc:  newLrc(name, s.n, r),
 		stat: s,
 	}
 }

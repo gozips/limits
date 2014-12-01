@@ -1,10 +1,15 @@
 package limits
 
 import (
+	"fmt"
 	"github.com/gozips/sources"
 	"github.com/nowk/assert"
 	"testing"
 )
+
+func e(p, s string) string {
+	return fmt.Sprintf(p, s)
+}
 
 func TestCombinedLimits(t *testing.T) {
 	var ts = tServer()
@@ -42,19 +47,19 @@ func TestCombinedLimitsOnSize(t *testing.T) {
 	for _, v := range []struct {
 		u, b string
 	}{
-		{u("one.txt"), "one"},
-		{u("12.txt"), "Hello W"},
-		{u("two.txt"), "tw"},
-		{u("three.txt"), ""},
-		{u("four.txt"), ""},
+		{"one.txt", "one"},
+		{"12.txt", "Hello W"},
+		{"two.txt", "tw"},
+		{"three.txt", ""},
+		{"four.txt", ""},
 	} {
-		_, b, err := fn(v.u)
+		_, b, err := fn(u(v.u))
 		if v.b != "" {
 			buf, err := readb(b)
 			assert.Equal(t, buf.String(), v.b)
 
 			if v.b == "Hello W" {
-				assert.Equal(t, "error: size: exceeded limit", err.Error())
+				assert.Equal(t, e("error: size: %s exceeded limit", v.u), err.Error())
 			}
 
 			if v.b == "tw" {
@@ -75,19 +80,19 @@ func TestCombinedLimitsOnSizeReversedOrder(t *testing.T) {
 	for _, v := range []struct {
 		u, b string
 	}{
-		{u("one.txt"), "one"},
-		{u("12.txt"), "Hello W"},
-		{u("two.txt"), "t"}, // NOTE we lose a byte if the previous exceeded size
-		{u("three.txt"), ""},
-		{u("four.txt"), ""},
+		{"one.txt", "one"},
+		{"12.txt", "Hello W"},
+		{"two.txt", "t"}, // NOTE we lose a byte if the previous exceeded size
+		{"three.txt", ""},
+		{"four.txt", ""},
 	} {
-		_, b, err := fn(v.u)
+		_, b, err := fn(u(v.u))
 		if v.b != "" {
 			buf, err := readb(b)
 			assert.Equal(t, buf.String(), v.b)
 
 			if v.b == "Hello W" {
-				assert.Equal(t, "error: size: exceeded limit", err.Error())
+				assert.Equal(t, e("error: size: %s exceeded limit", v.u), err.Error())
 			}
 
 			if v.b == "t" {
