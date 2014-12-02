@@ -17,8 +17,8 @@ func (s stat) Exceeded() bool {
 	return s.n <= 0
 }
 
-// Combined wraps LimitedRc and keeps track of what it has read as a total
-// combined
+// Combined wraps Limited and keeps track of total combined read size for all
+// reads. It truncates only the one file that exceeds the total limit set.
 type Combined struct {
 	*Limited
 	*stat

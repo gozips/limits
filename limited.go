@@ -6,7 +6,8 @@ import (
 	"io"
 )
 
-// Limited is a LimitedReader + ReadCloser
+// Limited is a LimitedReader + ReadCloser. It truncates all files that exceed
+// the set limit.
 type Limited struct {
 	Name string
 
