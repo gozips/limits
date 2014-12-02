@@ -6,15 +6,15 @@ import (
 )
 
 type stat struct {
-	n int64
+	MaxReadSize int64
 }
 
 func (s *stat) Decrement(n int64) {
-	s.n -= n
+	s.MaxReadSize -= n
 }
 
 func (s stat) Exceeded() bool {
-	return s.n <= 0
+	return s.MaxReadSize <= 0
 }
 
 // Combined wraps Limited and keeps track of total combined read size for all
@@ -26,7 +26,7 @@ type Combined struct {
 
 func NewCombined(s *stat, r io.ReadCloser) *Combined {
 	return &Combined{
-		Limited: NewLimited(s.n, r),
+		Limited: NewLimited(s.MaxReadSize, r),
 		stat:    s,
 	}
 }

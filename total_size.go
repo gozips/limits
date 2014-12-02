@@ -12,9 +12,7 @@ import (
 //
 // Running it in reverse will lose a byte each time the Size limiter exceeds
 func TotalSize(n int64, s source.Func) source.Func {
-	st := stat{
-		n: n,
-	}
+	var st = &stat{n}
 
 	return func(p string) (string, io.ReadCloser, error) {
 		name, r, err := s.Readfrom(p)
@@ -22,6 +20,6 @@ func TotalSize(n int64, s source.Func) source.Func {
 			return name, r, err
 		}
 
-		return name, NewCombined(&st, r), nil
+		return name, NewCombined(st, r), nil
 	}
 }
