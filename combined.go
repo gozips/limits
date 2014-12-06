@@ -23,6 +23,8 @@ func (s stat) Exceeded() bool {
 type Combined struct {
 	*Limited
 	*stat
+
+	N int64 // track how much was currently read
 }
 
 func NewCombined(s *stat, r io.ReadCloser) *Combined {
@@ -33,14 +35,20 @@ func NewCombined(s *stat, r io.ReadCloser) *Combined {
 }
 
 // Read decrements the stat n on each read
-func (r Combined) Read(b []byte) (int, error) {
+func (r *Combined) Read(b []byte) (int, error) {
 	if r.stat.Exceeded() {
+		x := "; File skipped"
+		if r.N > 0 {
+			x = "; File truncated"
+		}
+
 		return 0, source.ReadError{
-			fmt.Sprintf("error: total size: %s exceeded limit", r.Name),
+			fmt.Sprintf("error: total size: %s exceeded limit%s", r.Name, x),
 		}
 	}
 
 	n, err := r.Limited.Read(b)
 	r.stat.Decrement(int64(n))
+	r.N += int64(n) // increment current read attempt
 	return n, err
 }
