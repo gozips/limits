@@ -63,7 +63,8 @@ func TestCombinedLimitsOnSize(t *testing.T) {
 			}
 
 			if v.b == "tw" {
-				assert.Equal(t, "error: total size: exceeded limit", err.Error())
+				assert.Equal(t, e("error: total size: %s exceeded limit", v.u),
+					err.Error())
 			}
 		} else {
 			assert.Equal(t, "error: count: exceeded limit", err.Error())
@@ -96,7 +97,8 @@ func TestCombinedLimitsOnSizeReversedOrder(t *testing.T) {
 			}
 
 			if v.b == "t" {
-				assert.Equal(t, "error: total size: exceeded limit", err.Error())
+				assert.Equal(t, e("error: total size: %s exceeded limit", v.u),
+					err.Error())
 			}
 		} else {
 			assert.Equal(t, "error: count: exceeded limit", err.Error())

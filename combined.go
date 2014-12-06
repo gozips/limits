@@ -1,6 +1,7 @@
 package limits
 
 import (
+	"fmt"
 	"github.com/gozips/source"
 	"io"
 )
@@ -34,7 +35,9 @@ func NewCombined(s *stat, r io.ReadCloser) *Combined {
 // Read decrements the stat n on each read
 func (r Combined) Read(b []byte) (int, error) {
 	if r.stat.Exceeded() {
-		return 0, source.ReadError{"error: total size: exceeded limit"}
+		return 0, source.ReadError{
+			fmt.Sprintf("error: total size: %s exceeded limit", r.Name),
+		}
 	}
 
 	n, err := r.Limited.Read(b)

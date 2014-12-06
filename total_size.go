@@ -20,6 +20,9 @@ func TotalSize(n int64, s source.Func) source.Func {
 			return name, r, err
 		}
 
-		return name, NewCombined(st, r), nil
+		c := NewCombined(st, r)
+		c.Name = name
+
+		return name, c, nil
 	}
 }

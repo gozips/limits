@@ -1,6 +1,7 @@
 package limits
 
 import (
+	"fmt"
 	"github.com/gozips/sources"
 	"github.com/nowk/assert"
 	"testing"
@@ -16,17 +17,18 @@ func TestTotalSizeReadsTillTotalSizeIsMet(t *testing.T) {
 		u, b string
 		e    bool
 	}{
-		{u("39.txt"), `{"data": ["one"], "meta": {"code":200}}`, false},
-		{u("12.txt"), "Hello World!", false},
-		{u("3.txt"), "a", true},
-		{u("one.txt"), "", true},
+		{"39.txt", `{"data": ["one"], "meta": {"code":200}}`, false},
+		{"12.txt", "Hello World!", false},
+		{"3.txt", "a", true},
+		{"one.txt", "", true},
 	} {
-		_, r, _ := fn(v.u)
+		_, r, _ := fn(u(v.u))
 		b, err := readb(r)
 		assert.Equal(t, v.b, b.String())
 		assert.True(t, (err != nil) == v.e)
 		if v.e {
-			assert.Equal(t, "error: total size: exceeded limit", err.Error())
+			assert.Equal(t, fmt.Sprintf("error: total size: %s exceeded limit", v.u),
+				err.Error())
 		}
 	}
 }
